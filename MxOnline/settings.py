@@ -140,3 +140,7 @@ STATIC_ROOT = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+AUTHENTICATION_BACKENDS = (
+    'users.views.CustomBackend',
+)
+
