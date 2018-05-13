@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate,login
 from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
-from .models import UserProfile
+from .models import UserProfile,EmailVerifyRecord
 from django.views.generic.base import View
 from .forms import LoginForm,RegisterForm
 from django.contrib.auth.hashers import make_password
@@ -30,8 +30,11 @@ class LoginView(View):
             pass_word = request.POST.get("password", "")
             user = authenticate(username=user_name, password=pass_word)
             if user is not None:
-                login(request, user)
-                return render(request, "index.html", )
+                if user.is_active:
+                    login(request, user)
+                    return render(request, "index.html", )
+                else:
+                    return render(request, "login.html", {"msg": "没有激活"})
             else:
                 return render(request, "login.html", {"msg": "用户名或者密码错误"})
         else:
@@ -60,5 +63,17 @@ class RegisterView(View):
             send(user_name, 'register')
             return render(request, 'login.html')
         else:
-            return render(request, 'register.html')
+            return render(request, 'register.html',{"register_form":register_form})
 
+class ActiveUserView(View):
+    def get(self, request, active_code):
+        records = EmailVerifyRecord.objects.filter(code=active_code)
+        if records:
+            for record in records:
+                email = record.email
+                user = UserProfile.objects.get(email=email)
+                user.is_active = True
+                user.save()
+            return render(request, 'login.html')
+        else:
+            return render(request, 'register.html')
