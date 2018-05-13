@@ -150,10 +150,15 @@
 {#                            <input id="id_captcha_0" name="captcha_0" type="hidden" value="2f3f82e5f7a054bf5caa93b9b0bb6cc308fb7011" />#}
 {#                            <input autocomplete="off" id="id_captcha_1" name="captcha_1" type="text" />#}
                         </div>
+                        {{ msg }}
                         <div class="error btns" id="jsEmailTips">
+                            <ul>
+                                <li>555</li>
+                            </ul>
                             {% for key, error in register_form.errors.items %}
                                 {{ error }}
                             {% endfor %}
+                            {{ msg }}
                         </div>
                         <div class="auto-box marb8">
                         </div>
