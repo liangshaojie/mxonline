@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'operation',
     'xadmin',
     'crispy_forms',
+    'captcha'
 ]
 
 AUTH_USER_MODEL = 'users.UserProfile'
@@ -143,4 +144,11 @@ STATICFILES_DIRS = (
 AUTHENTICATION_BACKENDS = (
     'users.views.CustomBackend',
 )
+
+EMAIL_HOST = "smtp.qq.com"
+EMAIL_PORT = 25
+EMAIL_HOST_USER = "1257668486@qq.com"
+EMAIL_HOST_PASSWORD = "zxokayfvrguwfefj"
+EMAIL_USE_TLS = True
+EMAIL_FROM = "1257668486@qq.com"
 
