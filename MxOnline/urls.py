@@ -19,8 +19,11 @@ from django.contrib import admin
 import xadmin
 from django.views.generic import TemplateView
 from users.views import LoginView,RegisterView,ActiveUserView,ForgetPwView,ResetPwView,ModifyPwView
-
+from organization.views import OrgView
+from django.views.static import serve
+from django.conf import settings
 urlpatterns = [
+    url(r'^media/(?P<path>.*)$', serve, {"document_root": settings.MEDIA_ROOT}),
     url(r'^xadmin/', xadmin.site.urls),
     url(r'^$',TemplateView.as_view(template_name="index.html"),name="index"),
     url('^login/$', LoginView.as_view(), name='login'),
@@ -30,4 +33,5 @@ urlpatterns = [
     url(r'^forget/$', ForgetPwView.as_view(), name='forget_pwd'),
     url(r'^forgetpw/(?P<forget_code>.*)$', ResetPwView.as_view(), name='reset_pw'),
     url(r'^modifypw/$', ModifyPwView.as_view(), name='modify_pw'),
+    url(r'^org/', include('organization.urls', namespace='org')),
 ]
