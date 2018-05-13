@@ -5,9 +5,10 @@ from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
 from .models import UserProfile,EmailVerifyRecord
 from django.views.generic.base import View
-from .forms import LoginForm,RegisterForm
+from .forms import LoginForm,RegisterForm,ForgetPwForm,ResetForm
 from django.contrib.auth.hashers import make_password
 from utils.send_email import send
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
 class CustomBackend(ModelBackend):
     def authenticate(self, username=None, password=None, **kwargs):
@@ -79,3 +80,54 @@ class ActiveUserView(View):
             return render(request, 'login.html')
         else:
             return render(request, 'active_fail.html')
+
+class ForgetPwView(View):
+    def get(self, request):
+        forgetpw_form = ForgetPwForm()
+        return render(request, 'forgetpwd.html',{'forgetpw_form': forgetpw_form})
+
+    def post(self, request):
+        forgetpw_form = ForgetPwForm(request.POST)
+        if forgetpw_form.is_valid():
+            email = request.POST.get('email', '')
+            # 这个邮箱是否注册了?
+            records = UserProfile.objects.filter(email=email)
+            if records:
+                for record in records:
+                    send(record.email, 'forget')
+                return render(request, 'send_sucess.html')
+            else:
+                return render(request, 'forgetpwd.html', {'msg': '无效的邮箱'})
+        else:
+            return render(request, 'forgetpwd.html', {'forgetpw_form': forgetpw_form})
+
+class ResetPwView(View):
+    def get(self, request, forget_code):
+        try:
+            record = EmailVerifyRecord.objects.get(code=forget_code)
+            email = record.email
+            return render(request, 'password_reset.html', {
+                'email': email
+            })
+
+        except (ObjectDoesNotExist, MultipleObjectsReturned):
+            return render(request, 'reset_fail.html')
+
+class ModifyPwView(View):
+    def post(self, request):
+        resetform = ResetForm(request.POST)
+        if resetform.is_valid():
+            pw = request.POST.get('password', '')
+            pw2 = request.POST.get('password2', '')
+            if pw == pw2:
+                email = request.POST.get('email', '')
+                user = UserProfile.objects.get(email=email)
+                user.password = make_password(pw2)
+                user.save()
+                return render(request, 'login.html', {})
+            else:
+                return render(request, 'password_reset.html', {'msg': '两次输入的密码不相同'})
+        else:
+            return render(request, 'password_reset.html', {
+                'reset_form': resetform
+            })

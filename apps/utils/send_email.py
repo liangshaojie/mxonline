@@ -33,7 +33,6 @@ def send(email, send_type="register"):
         send_status = send_mail(email_title, email_body, settings.EMAIL_FROM, [email])
         # 如果发送成功
         if send_status:
-            s = 2
             pass
 
     if send_type == 'forget':
