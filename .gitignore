@@ -1,5 +1,11 @@
 .DS_Store
 node_modules/
 .idea/
+*.py[cod]
+*.so
+*.egg
+*.egg-info
+dist
+build
 __pycache__
 __pycache__/

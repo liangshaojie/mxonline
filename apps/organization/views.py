@@ -12,6 +12,7 @@ class OrgView(View):
         # 数据库操作
         orgs = CourseOrg.objects.all()
         cities = CityDict.objects.all()
+        hot_orgs = orgs.order_by("click_nums")[:3]
 
         # 获取param
         city_id = int(request.GET.get('city', 0))
@@ -23,6 +24,13 @@ class OrgView(View):
         category = request.GET.get('ct', "")
         if category:
             orgs = orgs.filter(category=category)
+
+        sorted = request.GET.get('sort', "")
+        if sorted:
+            if sorted == "student":
+                orgs = orgs.order_by("students")
+            elif sorted == "courses":
+                orgs = orgs.order_by("course_nums")
 
         # 获取count of queryset
         orgs_count = orgs.count()
@@ -41,5 +49,7 @@ class OrgView(View):
             'cities': cities,
             'orgs_count': orgs_count,
             'city_id': city_id,
-            'category':category
+            'category':category,
+            'hot_orgs':hot_orgs,
+            'sort':sorted
         })
