@@ -165,10 +165,10 @@
                     url: "{% url "org:add_ask" %}",
                     data: $('#jsStayForm').serialize(),
                     success: function (data) {
-                        if (data.status == 'success') {
+                        if (data.status === 'success') {
                             $('#jsStayForm')[0].reset();
                             alert("提交成功")
-                        } else if (data.status == 'fail') {
+                        } else if (data.status === 'fail') {
                             $('#jsCompanyTips').html(data.msg)
                         }
                     },
