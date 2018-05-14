@@ -54,7 +54,7 @@ class Teacher(models.Model):
     fav_nums = models.IntegerField(verbose_name=u"收藏数", default=0)
     add_time = models.DateTimeField(verbose_name=u"添加时间", default=datetime.now)
     organization = models.ForeignKey(CourseOrg, verbose_name="所属机构")
-    # avatar = models.ImageField(verbose_name="头像", upload_to='org/teacher/111', max_length=200, default='')
+    avatar = models.ImageField(verbose_name="头像", upload_to='teacher/%Y/%m', max_length=200, default='')
     class Meta:
         verbose_name = u'教师'
         verbose_name_plural = verbose_name

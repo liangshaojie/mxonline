@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+    <title>{% block title %}D教育-机构详情{% endblock %}</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/reset.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/animate.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/style.css">
+    <link rel="stylesheet" type="text/css" href="/static/js/plugins/queryCity/css/cityLayout.css">
+    {% block css %}
+    {% endblock %}
+
+    <script src="/static/js/jquery.min.js" type="text/javascript"></script>
+    <script src="/static/js/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+
+</head>
+<body>
+<section class="headerwrap headerwrap2">
+    <header>
+        <div class="header2 header">
+
+            {% include 'header-top.html' %}
+
+
+            <div class="middle companyheader">
+                <div class="wp">
+                    <img class="fl" style="width: 112px;height: 103px" src="{{ MEDIA_URL }}{{ org.image }}"/>
+                    <div class="head fl">
+                        <h1>
+                            慕课网
+                            <img src="/static/images/authentication.png"/>
+                            <img src="/static/images/gold.png"/>
+                        </h1>
+                        <p class="fl">
+                            <span class="fl" style="margin-top:8px;color:#848484;">推荐指数： </span>
+                            <span class="precision company-credit" data-star-scope="5.0"></span>
+                            <span class="key">5.0</span>
+                        </p>
+                    </div>
+                    <div class="btn fr collectionbtn  notlogin" data-favid="22" data-fav-type="1">
+                        {% if is_fav %}已收藏{% else %}收藏{% endif %}
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </header>
+</section>
+<section>
+    <div class="wp">
+        <ul class="crumbs">
+            <li><a href="{% url 'index' %}">首页</a>></li>
+            <li><a href="{% url 'org:list' %}">课程机构</a>></li>
+            {% block bread %}
+            {% endblock %}
+        </ul>
+    </div>
+</section>
+
+<section>
+    <div class="wp list personal_list comp">
+        <div class="left">
+            <ul>
+                <li class="active2"><a href="{% url 'org:home' org.id %}">机构首页</a></li>
+
+                 <li class=""><a href="">机构课程</a></li>
+                <li class=""><a href="">机构介绍</a></li>
+                <li class=""><a href="">机构讲师</a></li>
+{#                <li class=""><a href="{% url 'org:course' org.id %}">机构课程</a></li>#}
+{#                <li class=""><a href="{% url 'org:desc' org.id %}">机构介绍</a></li>#}
+{#                <li class=""><a href="{% url 'org:teacher' org.id %}">机构讲师</a></li>#}
+            </ul>
+        </div>
+
+        {% block right %}
+        {% endblock %}
+    </div>
+</section>
+<!--sidebar start-->
+<section>
+    <ul class="sidebar">
+        <li class="qq">
+            <a target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=2023525077&site=qq&menu=yes"></a>
+        </li>
+        <li class="totop"></li>
+    </ul>
+</section>
+<!--sidebar end-->
+<!--header start-->
+</div>
+<!--弹出省省市-->
+<script src="/static/js/selectUi.js" type='text/javascript'></script>
+<script type="text/javascript" src="/static/js/plugins/laydate/laydate.js"></script>
+<script src="/static/js/plugins/layer/layer.js"></script>
+<script src="/static/js/plugins/queryCity/js/public.js" type="text/javascript"></script>
+
+<script type="text/javascript" src="/static/js/plugins/jquery.raty.js"></script>
+{% block js %}
+{% endblock %}
+<script type="text/javascript">
+    //收藏分享
+    //收藏分享
+    function add_fav(current_elem, fav_id, fav_type) {
+        $.ajax({
+            cache: false,
+            type: "POST",
+            {#url: "{% url 'operation:change_fav' %}",#}
+            data: {'fav_id': fav_id, 'fav_type': fav_type},
+            async: true,
+            {# 因为这里是一个button没有使用到form表单的html标签, 所以需要在发送前加入csrftoken,并且这里只是传值{{}} #}
+            beforeSend: function (xhr, settings) {
+                xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
+            },
+            success: function (data) {
+                if (data.status == 'fail') {
+                    if (data.msg == '用户未登录') {
+                        window.location.href = "{% url 'login' %}";
+                    } else {
+                        alert(data.msg)
+                    }
+
+                } else if (data.status == 'success') {
+                    current_elem.text(data.msg)
+                }
+            },
+        });
+    }
+
+    {# 传入收藏机构的id和相应的type类型(model中定义的) #}
+    $('.collectionbtn').on('click', function () {
+        add_fav($(this), {{ org.id }}, 2);
+    });
+
+    $(function () {
+        var $precision = $('.precision'),
+            score = $precision.attr('data-star-scope'),
+            option = {
+                half: true,
+                path: '/static/images/',
+                precision: true,
+                size: 24,
+                starOff: 'g_star.png',
+                starOn: 'r_star.png',
+                starHalf: 'h_star.png',
+                hints: ['极差', '差', '一般', '好评', '非常满意'],
+                noRatedMsg: '暂时还未获得评价！',
+                readOnly: true,
+                score: score
+            };
+        $precision.raty(option);
+
+        $('.jsFavBtn').on('click', function () {
+            var type = $(this).attr('data-fav-type');
+            if (type == '1') {
+                favPraise($(this), 'fav', 1, '收藏');
+
+            } else if (type == '3') {
+                favPraise($(this), 'fav', 3);
+
+            } else if (type == '11') {
+                favPraise($(this), 'pra', 1);
+
+            } else if (type == '4') {
+                favPraise($(this), 'fav', 4);
+
+            }
+        });
+    })
+</script>
+
+
+<script type="text/javascript">
+    $(function () {
+        $('.recordbtn1').click(function () {
+            $('.recordbox1').show();
+        });
+        $('.recordbtn2').click(function () {
+            $('.recordbox2').show();
+        });
+
+    });
+</script>
+
+</body>
+</html>

@@ -5,6 +5,16 @@ from .models import CityDict, CourseOrg
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 from .forms import UserAskForm
 from django.http import HttpResponse
+from operation.models import UserFavorite
+
+
+def isFav(request, fav_id):
+    is_fav = False
+    # 用户登陆, 并且有这条收藏记录
+    if request.user.is_authenticated:
+        if UserFavorite.objects.filter(user=request.user, fav_id=fav_id, fav_type=2):
+            is_fav = True
+    return is_fav
 
 class OrgView(View):
     """
@@ -64,3 +74,16 @@ class AddUserAskView(View):
             return HttpResponse('{"status":"success"}',content_type='application/json')
         else:
             return HttpResponse('{"status":"fail","msg":"添加出错"}',content_type='application/json')
+
+class OrgHomeView(View):
+    def get(self, request, org_id):
+        org = CourseOrg.objects.get(id=int(org_id))
+        courses = org.course_set.all()[:3]
+        teacher = org.teacher_set.all()[:1][0]
+
+        return render(request, 'org-detail-homepage.html', {
+            'courses': courses,
+            'teacher': teacher,
+            'org': org,
+            'is_fav': isFav(request, org.id)
+        })

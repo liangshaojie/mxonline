@@ -1,10 +1,12 @@
 # encoding:utf-8
 from __future__ import unicode_literals
 from datetime import datetime
+from organization.models import CourseOrg
 
 from django.db import models
 
 class Course(models.Model):
+    course_org = models.ForeignKey(CourseOrg,null=True,verbose_name=u"课程机构")
     name = models.CharField(max_length=50,verbose_name=u"课程名")
     desc = models.CharField(max_length=300,verbose_name=u"课程描述")
     detail = models.TextField(verbose_name=u"课程详情")
