@@ -161,11 +161,9 @@
         $(function () {
             $('#jsStayBtn').on('click', function () {
                 $.ajax({
-                    cache: false,
                     type: "POST",
-                    url: "",
+                    url: "{% url "org:add_ask" %}",
                     data: $('#jsStayForm').serialize(),
-                    async: true,
                     success: function (data) {
                         if (data.status == 'success') {
                             $('#jsStayForm')[0].reset();
@@ -174,6 +172,9 @@
                             $('#jsCompanyTips').html(data.msg)
                         }
                     },
+                    error:function (data) {
+
+                    }
                 });
             });
         })
