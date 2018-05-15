@@ -35,4 +35,5 @@ urlpatterns = [
     url(r'^modifypw/$', ModifyPwView.as_view(), name='modify_pw'),
     url(r'^org/', include('organization.urls', namespace='org')),
     url(r'^operation/', include('operation.urls', namespace='operation')),
+    url(r'^course/', include('courses.urls', namespace='course')),
 ]
