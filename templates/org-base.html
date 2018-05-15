@@ -64,17 +64,12 @@
     <div class="wp list personal_list comp">
         <div class="left">
             <ul>
-                <li class="active2"><a href="{% url 'org:home' org.id %}">机构首页</a></li>
-
-                 <li class=""><a href="">机构课程</a></li>
-                <li class=""><a href="">机构介绍</a></li>
-                <li class=""><a href="">机构讲师</a></li>
-{#                <li class=""><a href="{% url 'org:course' org.id %}">机构课程</a></li>#}
-{#                <li class=""><a href="{% url 'org:desc' org.id %}">机构介绍</a></li>#}
-{#                <li class=""><a href="{% url 'org:teacher' org.id %}">机构讲师</a></li>#}
+                <li class="{% ifequal current_page 'home' %}active2{% endifequal %}"><a href="{% url 'org:home' org.id %}">机构首页</a></li>
+                <li class="{% ifequal current_page 'course' %}active2{% endifequal %}"><a href="{% url 'org:course' org.id %}">机构课程</a></li>
+                <li class="{% ifequal current_page 'desc' %}active2{% endifequal %}"><a href="{% url 'org:desc' org.id %}">机构介绍</a></li>
+                <li class="{% ifequal current_page 'teacher' %}active2{% endifequal %}"><a href="{% url 'org:teacher' org.id %}">机构讲师</a></li>
             </ul>
         </div>
-
         {% block right %}
         {% endblock %}
     </div>
@@ -107,7 +102,7 @@
         $.ajax({
             cache: false,
             type: "POST",
-            {#url: "{% url 'operation:change_fav' %}",#}
+            url: "{% url 'operation:change_fav' %}",
             data: {'fav_id': fav_id, 'fav_type': fav_type},
             async: true,
             {# 因为这里是一个button没有使用到form表单的html标签, 所以需要在发送前加入csrftoken,并且这里只是传值{{}} #}
@@ -115,14 +110,13 @@
                 xhr.setRequestHeader("X-CSRFToken", "{{ csrf_token }}");
             },
             success: function (data) {
-                if (data.status == 'fail') {
-                    if (data.msg == '用户未登录') {
+                if (data.status === 'fail') {
+                    if (data.msg === '用户未登录') {
                         window.location.href = "{% url 'login' %}";
                     } else {
                         alert(data.msg)
                     }
-
-                } else if (data.status == 'success') {
+                } else if (data.status === 'success') {
                     current_elem.text(data.msg)
                 }
             },
