@@ -29,3 +29,8 @@ class CourseListView(View):
             "sort":sorted,
             "hot_courses":hot_courses
         })
+
+
+class CourseDetailView(View):
+    def get(self, request,course_id):
+        return render(request,"course-detail.html",{})
