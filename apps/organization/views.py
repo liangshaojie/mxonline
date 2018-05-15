@@ -77,13 +77,50 @@ class AddUserAskView(View):
 
 class OrgHomeView(View):
     def get(self, request, org_id):
+        current_page = 'home'
         org = CourseOrg.objects.get(id=int(org_id))
-        courses = org.course_set.all()[:3]
+        courses = org.course_set.all()[:4]
         teacher = org.teacher_set.all()[:1][0]
 
         return render(request, 'org-detail-homepage.html', {
             'courses': courses,
             'teacher': teacher,
             'org': org,
-            'is_fav': isFav(request, org.id)
+            'is_fav': isFav(request, org.id),
+            'current_page':current_page
+        })
+
+
+class OrgCourseView(View):
+    def get(self, request, org_id):
+        current_page = 'course'
+        org = CourseOrg.objects.get(id=int(org_id))
+        courses = org.course_set.all()
+        return render(request, 'org-detail-course.html', {
+            'courses': courses,
+            'org': org,
+            'is_fav': isFav(request, org.id),
+            'current_page': current_page
+        })
+
+class OrgDescView(View):
+    def get(self, request, org_id):
+        current_page = 'desc'
+        org = CourseOrg.objects.get(id=int(org_id))
+        return render(request, 'org-detail-desc.html', {
+            'org': org,
+            'is_fav': isFav(request, org.id),
+            'current_page': current_page
+        })
+
+class OrgTeacherView(View):
+    def get(self, request, org_id):
+        current_page = 'teacher'
+        org = CourseOrg.objects.get(id=int(org_id))
+        teachers = org.teacher_set.all()
+        return render(request, 'org-detail-teachers.html', {
+            'org': org,
+            'teachers': teachers,
+            'is_fav': isFav(request, org.id),
+            'current_page': current_page
         })
