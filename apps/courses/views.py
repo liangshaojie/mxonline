@@ -5,14 +5,17 @@ from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 
 class CourseListView(View):
     def get(self,request):
-        all_courses = Course.objects.all()
+        all_courses = Course.objects.all().order_by("-add_time")
+        hot_courses = Course.objects.all().order_by("-click_nums")[:3]
+
+
 
         sorted = request.GET.get('sort', "")
         if sorted:
-            if sorted == "student":
-                all_courses = all_courses.order_by("students")
-            elif sorted == "courses":
-                all_courses = all_courses.order_by("click_nums")
+            if sorted == "students":
+                all_courses = all_courses.order_by("-students")
+            elif sorted == "hot":
+                all_courses = all_courses.order_by("-click_nums")
 
 
         try:
@@ -22,5 +25,7 @@ class CourseListView(View):
         p = Paginator(all_courses, per_page=3, request=request)
         courses = p.page(page)
         return render(request,'course-list.html',{
-            "all_courses":courses
+            "all_courses":courses,
+            "sort":sorted,
+            "hot_courses":hot_courses
         })
