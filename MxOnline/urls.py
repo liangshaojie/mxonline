@@ -34,4 +34,5 @@ urlpatterns = [
     url(r'^forgetpw/(?P<forget_code>.*)$', ResetPwView.as_view(), name='reset_pw'),
     url(r'^modifypw/$', ModifyPwView.as_view(), name='modify_pw'),
     url(r'^org/', include('organization.urls', namespace='org')),
+    url(r'^operation/', include('operation.urls', namespace='operation')),
 ]
