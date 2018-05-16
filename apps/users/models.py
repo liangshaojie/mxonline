@@ -22,6 +22,9 @@ class UserProfile(AbstractUser):
         verbose_name = '用户信息'
         verbose_name_plural = verbose_name
 
+    def __unicode__(self):
+        return self.username
+
 class EmailVerifyRecord(models.Model):
     SEND_CHOICE = (
         ('register', u'注册账号'),
@@ -49,3 +52,7 @@ class Banner(models.Model):
     class Meta:
         verbose_name = u'轮播图'
         verbose_name_plural = verbose_name
+
+    def __unicode__(self):
+        return self.index
+

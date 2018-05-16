@@ -35,8 +35,7 @@
                                 <li><span class="pram word3">课程类别：</span><span title="">{{ course.category }}</span></li>
                                 <li class="piclist"><span class="pram word4">学习用户：</span>
                                     {% for user_course in course.get_learn_users %}
-                                        8888888888888888888
-                                        <span class="pic"><img width="40" height="40" src="{{ MEDIA_URL }}{{ user_course }}"/></span>
+                                        <span class="pic"><img width="40" height="40" src="{{ MEDIA_URL }}{{ user_course.user.image }}"/></span>
                                     {% endfor %}
                                 </li>
                             </ul>

@@ -6,6 +6,7 @@ from django.db import models
 
 from users.models import UserProfile
 from courses.models import Course
+from organization.models import CityDict
 
 class UserAsk(models.Model):
     name = models.CharField(verbose_name=u"姓名", max_length=20)
@@ -17,6 +18,9 @@ class UserAsk(models.Model):
         verbose_name = u'用户询问'
         verbose_name_plural = verbose_name
 
+    def __unicode__(self):
+        return self.name
+
 
 class CourseComments(models.Model):
     course = models.ForeignKey(Course, verbose_name=u"课程")
@@ -27,6 +31,9 @@ class CourseComments(models.Model):
     class Meta:
         verbose_name = u'课程评论'
         verbose_name_plural = verbose_name
+
+    def __unicode__(self):
+        return self.course.name
 
 class UserFavorite(models.Model):
     TYPE_CHOICE = (
@@ -43,6 +50,9 @@ class UserFavorite(models.Model):
         verbose_name = u'用户收藏'
         verbose_name_plural = verbose_name
 
+    def __unicode__(self):
+        return self.user.nick_name
+
 
 class UserMessage(models.Model):
     user = models.IntegerField(verbose_name=u"接受用户", default=0)
@@ -54,14 +64,21 @@ class UserMessage(models.Model):
         verbose_name = u'用户消息'
         verbose_name_plural = verbose_name
 
+    def __unicode__(self):
+        return self.message
+
 class UserCourse(models.Model):
     course = models.ForeignKey(Course, verbose_name=u"课程")
-    user = models.ForeignKey(UserProfile, verbose_name=u"用户")
+    user = models.ForeignKey(to=UserProfile, verbose_name=u"用户")
     add_time = models.DateTimeField(verbose_name=u"添加时间", default=datetime.now)
+
 
     class Meta:
         verbose_name = u'用户课程表'
         verbose_name_plural = verbose_name
+
+    def __unicode__(self):
+        return self.user.nick_name
 
 
 
