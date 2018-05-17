@@ -22,6 +22,11 @@ class Course(models.Model):
     class Meta:
         verbose_name = u'课程'
         verbose_name_plural = verbose_name
+
+    # 获取课程所有章节
+    def get_learn_lesson(self):
+        return self.lesson_set.all()
+
     # 获取章节数量
     def get_zj_nums(self):
         return self.lesson_set.all().count()
@@ -40,6 +45,10 @@ class Lesson(models.Model):
     class Meta:
         verbose_name = u'章节'
         verbose_name_plural = verbose_name
+
+    # 获取章节视频
+    def get_learn_video(self):
+        return self.video_set.all()
 
     def __unicode__(self):
         return self.name
