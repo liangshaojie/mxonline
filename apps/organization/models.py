@@ -36,6 +36,9 @@ class CourseOrg(models.Model):
     course_nums = models.IntegerField(verbose_name=u"课程数", default=0)
     add_time = models.DateTimeField(verbose_name=u"添加时间", default=datetime.now)
 
+    def get_teacher_nums(self):
+        return self.teacher_set.all().count()
+
     class Meta:
         verbose_name = '机构'
         verbose_name_plural = verbose_name

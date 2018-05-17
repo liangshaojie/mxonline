@@ -17,6 +17,7 @@ class Course(models.Model):
     image = models.ImageField(verbose_name=u"封面图", upload_to='courses/%Y/%m', max_length=100)
     click_nums = models.IntegerField(verbose_name=u"点击数", default=0)
     category = models.CharField(verbose_name=u"课程类别",max_length=20,default="后端开发")
+    tag = models.CharField(default="", verbose_name=u"课程标签", max_length=10)
     add_time = models.DateTimeField(verbose_name=u"添加时间", default=datetime.now)
     class Meta:
         verbose_name = u'课程'
