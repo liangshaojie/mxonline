@@ -1,8 +1,10 @@
+# coding=utf-8
 from django.shortcuts import render
 from django.views.generic.base import View
 from .models import Course,CourseResource
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
-from operation.models import UserFavorite
+from operation.models import UserFavorite,CourseComments
+from django.shortcuts import HttpResponse
 
 class CourseListView(View):
     def get(self,request):
@@ -68,3 +70,34 @@ class CourseInfoView(View):
             "course": course,
             "all_resources":all_resources
         })
+
+class CommentsView(View):
+    def get(self, request, course_id):
+        course = Course.objects.get(id=int(course_id))
+        all_resources = CourseResource.objects.filter(course=course)
+        all_comment = CourseComments.objects.all()
+        return render(request, "course-comment.html", {
+            "course": course,
+            "all_resources": all_resources,
+            "all_comment":all_comment
+        })
+
+class AddCommentsView(View):
+    def post(self,request):
+        if not request.user.is_authenticated():
+            return HttpResponse('{"status": "fail", "msg": "用户未登录"}', content_type='application/json')
+
+        course_id = request.POST.get("course_id",0)
+        comments = request.POST.get("comments","")
+
+        if int(course_id) > 0 and comments:
+            course_comment = CourseComments()
+            course = Course.objects.get(id=int(course_id))
+            course_comment.course = course
+            course_comment.comments = comments
+            course_comment.user = request.user
+            course_comment.save()
+            return HttpResponse('{"status": "success", "msg": "添加成功"}', content_type='application/json')
+        else:
+            return HttpResponse('{"status": "fail", "msg": "添加失败"}', content_type='application/json')
+
