@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.views.generic.base import View
 from .models import Course,CourseResource
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
-from operation.models import UserFavorite,CourseComments
+from operation.models import UserFavorite,CourseComments,UserCourse
 from django.shortcuts import HttpResponse
 
 class CourseListView(View):
@@ -75,11 +75,20 @@ class CommentsView(View):
     def get(self, request, course_id):
         course = Course.objects.get(id=int(course_id))
         all_resources = CourseResource.objects.filter(course=course)
+
+        user_course = UserCourse.objects.filter(course=course)
+        user_ids = [user_course.user.id for user_course in user_course]
+
+        all_user_course = UserCourse.objects.filter(user_id__in=user_ids)
+        course_ids = [user_course.course.id for user_course in all_user_course]
+
+        relate_courses = Course.objects.filter(id__in=course_ids).order_by("-click_nums")[:5]
         all_comment = CourseComments.objects.all()
         return render(request, "course-comment.html", {
             "course": course,
             "all_resources": all_resources,
-            "all_comment":all_comment
+            "all_comment":all_comment,
+            "relate_courses":relate_courses
         })
 
 class AddCommentsView(View):
