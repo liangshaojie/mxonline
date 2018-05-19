@@ -7,6 +7,7 @@ from .forms import UserAskForm
 from django.http import HttpResponse
 from operation.models import UserFavorite
 from courses.models import Course
+from django.db.models import Q
 
 
 def isFav(request, fav_id):
@@ -27,8 +28,15 @@ class OrgView(View):
         cities = CityDict.objects.all()
         hot_orgs = orgs.order_by("click_nums")[:3]
 
+        search_keywords = request.GET.get('keywords', "")
+        if search_keywords:
+            orgs = orgs.filter(
+                Q(name__icontains=search_keywords) | Q(desc__icontains=search_keywords))
+
         # 获取param
         city_id = int(request.GET.get('city', 0))
+
+
 
         # 改变queryset
         if city_id:
@@ -130,6 +138,11 @@ class TeacherListView(View):
     """课程讲师列表页面"""
     def get(self,request):
         all_teachers = Teacher.objects.all()
+
+        search_keywords = request.GET.get('keywords', "")
+        if search_keywords:
+            all_teachers = all_teachers.filter(
+                Q(name__icontains=search_keywords) | Q(work_company__icontains=search_keywords) | Q(work_position__icontains=search_keywords))
 
         sorted = request.GET.get('sort', "")
 
