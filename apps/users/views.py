@@ -9,6 +9,7 @@ from .forms import LoginForm,RegisterForm,ForgetPwForm,ResetForm
 from django.contrib.auth.hashers import make_password
 from utils.send_email import send
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
+from utils.mixin_utils import LoginRequiredMixin
 
 class CustomBackend(ModelBackend):
     def authenticate(self, username=None, password=None, **kwargs):
@@ -131,3 +132,7 @@ class ModifyPwView(View):
             return render(request, 'password_reset.html', {
                 'reset_form': resetform
             })
+
+class UserInfoView(LoginRequiredMixin,View):
+    def get(self, request):
+        return render(request,'usercenter-info.html',{})
