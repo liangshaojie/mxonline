@@ -1,7 +1,7 @@
 # coding=utf-8
 from django.shortcuts import render
 from django.views.generic.base import View
-from .models import CityDict, CourseOrg
+from .models import CityDict, CourseOrg,Teacher
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 from .forms import UserAskForm
 from django.http import HttpResponse
@@ -123,4 +123,31 @@ class OrgTeacherView(View):
             'teachers': teachers,
             'is_fav': isFav(request, org.id),
             'current_page': current_page
+        })
+
+class TeacherListView(View):
+    """课程讲师列表页面"""
+    def get(self,request):
+        all_teachers = Teacher.objects.all()
+
+        sorted = request.GET.get('sort', "")
+
+        if sorted == "hot":
+            all_teachers = all_teachers.order_by("-click_nums")
+
+        sorted_teacher = Teacher.objects.all().order_by("-click_nums")[:3]
+
+        # 分页
+        try:
+            page = request.GET.get('page', 1)
+        except PageNotAnInteger:
+            page = 1
+        p = Paginator(all_teachers, per_page=2, request=request)
+
+        all_teachers = p.page(page)
+
+        return render(request,"teachers-list.html",{
+            "all_teachers":all_teachers,
+            "sorted_teacher":sorted_teacher,
+            "sorted":sorted
         })
