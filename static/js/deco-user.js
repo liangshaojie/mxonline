@@ -90,6 +90,7 @@ $(function(){
             data:$('#jsResetPwdForm').serialize(),
             async: true,
             success: function(data) {
+
                 if(data.password1){
                     Dml.fun.showValidateError($("#pwd"), data.password1);
                 }else if(data.password2){

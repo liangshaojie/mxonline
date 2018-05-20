@@ -1,15 +1,17 @@
 # coding=utf-8
+import json
 from django.shortcuts import render
 from django.contrib.auth import authenticate,login
 from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
 from .models import UserProfile,EmailVerifyRecord
 from django.views.generic.base import View
-from .forms import LoginForm,RegisterForm,ForgetPwForm,ResetForm
+from .forms import LoginForm,RegisterForm,ForgetPwForm,ResetForm,UploadImageForm,UpdatePwdForm
 from django.contrib.auth.hashers import make_password
 from utils.send_email import send
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from utils.mixin_utils import LoginRequiredMixin
+from django.http import HttpResponse
 
 class CustomBackend(ModelBackend):
     def authenticate(self, username=None, password=None, **kwargs):
@@ -136,3 +138,33 @@ class ModifyPwView(View):
 class UserInfoView(LoginRequiredMixin,View):
     def get(self, request):
         return render(request,'usercenter-info.html',{})
+
+class UpdateImageView(LoginRequiredMixin,View):
+    def post(self,request):
+        image_form = UploadImageForm(request.POST,request.FILES,instance=request.user)
+        if image_form.is_valid():
+            image_form.save()
+            # image = image_form.cleaned_data['image']
+            # request.user.image = image
+            # request.user.save()
+            return HttpResponse('{"status":"success"}', content_type='application/json')
+        else:
+            return HttpResponse('{"status":"fail"}', content_type='application/json')
+
+
+class UpdatePwdView(View):
+    # 修改密码
+    def post(self, request):
+        resetform = UpdatePwdForm(request.POST)
+        if resetform.is_valid():
+            pw = request.POST.get('password1', '')
+            pw2 = request.POST.get('password2', '')
+            if pw == pw2:
+                user = request.user
+                user.password = make_password(pw2)
+                user.save()
+                return HttpResponse('{"status":"success"}', content_type='application/json')
+            else:
+                return HttpResponse('{"status":"fail","msg":"密码不一致"}', content_type='application/json')
+        else:
+            return HttpResponse(json.dumps(resetform.errors), content_type='application/json')
