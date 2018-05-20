@@ -19,7 +19,10 @@ def generate_ranstr(str_len=10):
 def send(email, send_type="register"):
     # 将这条记录存入数据库
     email_verify = EmailVerifyRecord()
-    code = generate_ranstr(16)
+    if send_type == 'updateEmail':
+        code = generate_ranstr(4)
+    else:
+        code = generate_ranstr(16)
     email_verify.code = code
     email_verify.email = email
     email_verify.send_type = send_type

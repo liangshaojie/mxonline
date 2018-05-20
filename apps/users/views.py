@@ -6,7 +6,7 @@ from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
 from .models import UserProfile,EmailVerifyRecord
 from django.views.generic.base import View
-from .forms import LoginForm,RegisterForm,ForgetPwForm,ResetForm,UploadImageForm,UpdatePwdForm
+from .forms import LoginForm,RegisterForm,ForgetPwForm,ResetForm,UploadImageForm,UpdatePwdForm,UserInfoForm
 from django.contrib.auth.hashers import make_password
 from utils.send_email import send
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
@@ -139,6 +139,15 @@ class UserInfoView(LoginRequiredMixin,View):
     def get(self, request):
         return render(request,'usercenter-info.html',{})
 
+    def post(self,request):
+        user_info_form = UserInfoForm(request.POST,instance=request.user)
+        if user_info_form.is_valid():
+            user_info_form.save()
+            return HttpResponse('{"status":"success"}', content_type='application/json')
+        else:
+            return HttpResponse(json.dumps(user_info_form.errors), content_type='application/json')
+
+
 class UpdateImageView(LoginRequiredMixin,View):
     def post(self,request):
         image_form = UploadImageForm(request.POST,request.FILES,instance=request.user)
@@ -177,3 +186,22 @@ class SendEmailCodeView(LoginRequiredMixin,View):
 
         send(email,'updateEmail')
         return HttpResponse('{"status":"success"}', content_type='application/json')
+
+class UpdateEmailView(LoginRequiredMixin,View):
+    # 修改个人邮箱
+    def post(self,request):
+        email = request.POST.get('email', '')
+        code = request.POST.get('code', '')
+        existed_records = EmailVerifyRecord.objects.filter(email=email,code=code,send_type="updateEmail")
+        if existed_records:
+            user = request.user
+            user.email = email
+            user.save()
+            return HttpResponse('{"status":"success"}', content_type='application/json')
+        else:
+            return HttpResponse('{"email":"验证码出错"}', content_type='application/json')
+
+
+
+
+
