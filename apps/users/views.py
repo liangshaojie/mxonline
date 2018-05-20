@@ -12,6 +12,7 @@ from utils.send_email import send
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from utils.mixin_utils import LoginRequiredMixin
 from django.http import HttpResponse
+from operation.models import UserCourse
 
 class CustomBackend(ModelBackend):
     def authenticate(self, username=None, password=None, **kwargs):
@@ -200,6 +201,14 @@ class UpdateEmailView(LoginRequiredMixin,View):
             return HttpResponse('{"status":"success"}', content_type='application/json')
         else:
             return HttpResponse('{"email":"验证码出错"}', content_type='application/json')
+
+class MyCourseView(LoginRequiredMixin,View):
+    # 我的课程
+    def get(self,request):
+        user_courses = UserCourse.objects.filter(user = request.user)
+        return render(request,"usercenter-mycourse.html",{
+            "user_courses":user_courses
+        })
 
 
 
