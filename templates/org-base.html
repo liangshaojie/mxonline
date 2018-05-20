@@ -67,7 +67,7 @@
                 <li class="{% ifequal current_page 'home' %}active2{% endifequal %}"><a href="{% url 'org:home' org.id %}">机构首页</a></li>
                 <li class="{% ifequal current_page 'course' %}active2{% endifequal %}"><a href="{% url 'org:course' org.id %}">机构课程</a></li>
                 <li class="{% ifequal current_page 'desc' %}active2{% endifequal %}"><a href="{% url 'org:desc' org.id %}">机构介绍</a></li>
-                <li class="{% ifequal current_page 'teacher' %}active2{% endifequal %}"><a href="{% url 'org:teacher' org.id %}">机构讲师</a></li>
+                <li class="{% ifequal current_page 'teacher' %}active2{% endifequal %}"><a href="{% url 'org:org_teacher' org.id %}">机构讲师</a></li>
             </ul>
         </div>
         {% block right %}

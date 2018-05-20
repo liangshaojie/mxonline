@@ -12,7 +12,8 @@ from utils.send_email import send
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from utils.mixin_utils import LoginRequiredMixin
 from django.http import HttpResponse
-from operation.models import UserCourse
+from operation.models import UserCourse,UserFavorite
+from organization.models import CourseOrg
 
 class CustomBackend(ModelBackend):
     def authenticate(self, username=None, password=None, **kwargs):
@@ -209,6 +210,21 @@ class MyCourseView(LoginRequiredMixin,View):
         return render(request,"usercenter-mycourse.html",{
             "user_courses":user_courses
         })
+
+class MyFavOrgView(LoginRequiredMixin,View):
+    # 我的课程
+    def get(self,request):
+        org_list = []
+        fav_orgs = UserFavorite.objects.filter(user = request.user,fav_type=2)
+        for fav_org in fav_orgs:
+            org_id = fav_org.fav_id
+            org = CourseOrg.objects.get(id=org_id)
+            org_list.append(org)
+        return render(request,"usercenter-fav-org.html",{
+            "org_list":org_list
+        })
+
+
 
 
 

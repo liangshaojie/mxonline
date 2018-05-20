@@ -85,6 +85,7 @@ class AddUserAskView(View):
             return HttpResponse('{"status":"fail","msg":"添加出错"}',content_type='application/json')
 
 class OrgHomeView(View):
+
     def get(self, request, org_id):
         current_page = 'home'
         org = CourseOrg.objects.get(id=int(org_id))
