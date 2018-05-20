@@ -168,3 +168,12 @@ class UpdatePwdView(View):
                 return HttpResponse('{"status":"fail","msg":"密码不一致"}', content_type='application/json')
         else:
             return HttpResponse(json.dumps(resetform.errors), content_type='application/json')
+
+class SendEmailCodeView(LoginRequiredMixin,View):
+    def get(self,request):
+        email = request.GET.get('email', '')
+        if UserProfile.objects.filter(email=email):
+            return HttpResponse('{"email":"邮箱已经存在"}', content_type='application/json')
+
+        send(email,'updateEmail')
+        return HttpResponse('{"status":"success"}', content_type='application/json')

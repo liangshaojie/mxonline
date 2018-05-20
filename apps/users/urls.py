@@ -3,7 +3,7 @@ __author__ = "lsj"
 __date__ = '2018/5/19/019 21:17'
 
 from django.conf.urls import url
-from .views import UserInfoView,UpdateImageView,UpdatePwdView
+from .views import UserInfoView,UpdateImageView,UpdatePwdView,SendEmailCodeView
 
 
 urlpatterns = [
@@ -16,4 +16,6 @@ urlpatterns = [
     # 用户个人中心修改密码
     url(r'^update/pwd/$', UpdatePwdView.as_view(), name='update_pwd'),
 
+    # 向邮箱里面发送验证码
+    url(r'^sendemail_code/$', SendEmailCodeView.as_view(), name='sendemail_code'),
 ]
