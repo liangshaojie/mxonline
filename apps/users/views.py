@@ -12,9 +12,10 @@ from utils.send_email import send
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 from utils.mixin_utils import LoginRequiredMixin
 from django.http import HttpResponse
-from operation.models import UserCourse,UserFavorite
+from operation.models import UserCourse,UserFavorite,UserMessage
 from organization.models import CourseOrg,Teacher
 from courses.models import Course
+from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 
 class CustomBackend(ModelBackend):
     def authenticate(self, username=None, password=None, **kwargs):
@@ -68,6 +69,13 @@ class RegisterView(View):
             encrypt_pw = make_password(pass_word)
             user_profile.password = encrypt_pw
             user_profile.save()
+
+            user_message = UserMessage()
+            user_message.user = user_profile.id
+            user_message.message = "欢迎注册网站，好好学习，天天向上"
+            user_message.save()
+
+
 
             send(user_name, 'register')
             return render(request, 'login.html')
@@ -253,6 +261,23 @@ class MyFavCourseView(LoginRequiredMixin,View):
             "course_list":course_list
         })
 
+class MyMessageView(LoginRequiredMixin,View):
+    # 我的消息
+    def get(self,request):
+        all_messages = UserMessage.objects.filter(user=request.user.id)
+
+        # 分页
+        try:
+            page = request.GET.get('page', 1)
+        except PageNotAnInteger:
+            page = 1
+        p = Paginator(all_messages, per_page=3, request=request)
+
+        messages = p.page(page)
+
+        return render(request,"usercenter-message.html",{
+            "messages":messages
+        })
 
 
 

@@ -17,6 +17,11 @@ class UserProfile(AbstractUser):
     mobile = models.CharField(verbose_name=u"手机号", max_length=11, null=True, blank=True)
     image = models.ImageField(verbose_name=u"头像", upload_to="image/user/profile/", default='image/user/default.png',
                               max_length=200)
+    def unread_nums(self):
+        # 获取用户未读消息数量
+        from operation.models import UserMessage
+        return UserMessage.objects.filter(user=self.id).count()
+
 
     class Meta:
         verbose_name = '用户信息'

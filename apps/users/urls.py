@@ -3,8 +3,8 @@ __author__ = "lsj"
 __date__ = '2018/5/19/019 21:17'
 
 from django.conf.urls import url
-from .views import UserInfoView,UpdateImageView,UpdatePwdView,SendEmailCodeView,UpdateEmailView,MyCourseView,MyFavOrgView,MyFavTeacherView,MyFavCourseView
-
+from .views import UserInfoView,UpdateImageView,UpdatePwdView,SendEmailCodeView,UpdateEmailView,MyCourseView,MyFavOrgView
+from .views import MyMessageView,MyFavTeacherView,MyFavCourseView
 
 urlpatterns = [
     # 用户信息
@@ -33,5 +33,8 @@ urlpatterns = [
 
     # 我的收藏课程
     url(r'^myfav/course', MyFavCourseView.as_view(), name='myfav_course'),
+
+    # 我的消息
+    url(r'^mymessage', MyMessageView.as_view(), name='mymessage'),
 
 ]
