@@ -18,14 +18,14 @@ from django.conf.urls import url, include
 from django.contrib import admin
 import xadmin
 from django.views.generic import TemplateView
-from users.views import LoginView,RegisterView,ActiveUserView,ForgetPwView,ResetPwView,ModifyPwView,LogoutView
+from users.views import LoginView,RegisterView,ActiveUserView,ForgetPwView,ResetPwView,ModifyPwView,LogoutView,IndexView
 from organization.views import OrgView
 from django.views.static import serve
 from django.conf import settings
 urlpatterns = [
     url(r'^media/(?P<path>.*)$', serve, {"document_root": settings.MEDIA_ROOT}),
     url(r'^xadmin/', xadmin.site.urls),
-    url(r'^$',TemplateView.as_view(template_name="index.html"),name="index"),
+    url(r'^$',IndexView.as_view(),name="index"),
     url('^login/$', LoginView.as_view(), name='login'),
     url('^logout/$', LogoutView.as_view(), name='logout'),
     url('^register/$', RegisterView.as_view(), name='register'),

@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.contrib.auth import authenticate,login,logout
 from django.contrib.auth.backends import ModelBackend
 from django.db.models import Q
-from .models import UserProfile,EmailVerifyRecord
+from .models import UserProfile,EmailVerifyRecord,Banner
 from django.views.generic.base import View
 from .forms import LoginForm,RegisterForm,ForgetPwForm,ResetForm,UploadImageForm,UpdatePwdForm,UserInfoForm
 from django.contrib.auth.hashers import make_password
@@ -292,9 +292,18 @@ class MyMessageView(LoginRequiredMixin,View):
         })
 
 
-
-
-
-
-
+class IndexView(View):
+    # 首页
+    def get(self,request):
+        # 去除轮播图
+        all_banners = Banner.objects.all().order_by("index")
+        courses = Course.objects.filter(is_banner=False)[:6]
+        banner_courses = Course.objects.filter(is_banner=True)[:3]
+        course_orgs = CourseOrg.objects.all()[:15]
+        return render(request,"index.html",{
+            "all_banners":all_banners,
+            "courses":courses,
+            "banner_courses":banner_courses,
+            "course_orgs":course_orgs
+        })
 

@@ -60,5 +60,5 @@ class Banner(models.Model):
         verbose_name_plural = verbose_name
 
     def __unicode__(self):
-        return self.index
+        return str(self.index)
 
