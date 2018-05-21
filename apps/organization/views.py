@@ -89,6 +89,8 @@ class OrgHomeView(View):
     def get(self, request, org_id):
         current_page = 'home'
         org = CourseOrg.objects.get(id=int(org_id))
+        org.click_nums += 1
+        org.save()
         courses = org.course_set.all()[:4]
         teacher = org.teacher_set.all()[:1][0]
 

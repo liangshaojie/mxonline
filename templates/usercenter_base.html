@@ -52,7 +52,7 @@
                                 </dl>
                                 <div class="btn">
                                     <a class="personcenter fl" href="{% url 'users:user_info' %}">进入个人中心</a>
-                                    <a class="fr" href="/logout/">退出</a>
+                                    <a class="fr" href="{% url "logout" %}">退出</a>
                                 </div>
                             </div>
                         </div>
@@ -60,14 +60,14 @@
                         <a style="color:white" class="fr registerbtn" href="{% url 'register' %}">注册</a>
                         <a style="color:white" class="fr loginbtn" href="{% url 'login' %}">登录</a>
                     {% endif %}
-                    <a href="usercenter-message.html">
+                    <a href="{% url "users:mymessage" %}">
                         <div class="msg-num"><span id="MsgNum">{{ request.user.unread_nums }}</span></div>
                     </a>
                 </div>
             </div>
             <div class="middle">
                 <div class="wp">
-                    <a href="index.html"><img class="fl" src="/static/images/logo2.png"/></a>
+                    <a href="{% url "index" %}"><img class="fl" src="/static/images/logo2.png"/></a>
                     <h1>我的慕学网</h1>
                 </div>
             </div>
