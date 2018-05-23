@@ -1,3 +1,4 @@
+# coding=utf-8
 """MxOnline URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
@@ -23,6 +24,7 @@ from organization.views import OrgView
 from django.views.static import serve
 from django.conf import settings
 urlpatterns = [
+    url(r'^static/(?P<path>.*)$', serve, {"document_root": settings.STATIC_ROOT}),
     url(r'^media/(?P<path>.*)$', serve, {"document_root": settings.MEDIA_ROOT}),
     url(r'^xadmin/', xadmin.site.urls),
     url(r'^$',IndexView.as_view(),name="index"),
@@ -39,3 +41,6 @@ urlpatterns = [
     url(r'^course/', include('courses.urls', namespace='course')),
     url(r'^users/', include('users.urls', namespace='users')),
 ]
+# 全局配置404页面
+handler404 = "users.views.page_not_find"
+handler500 = "users.views.page_error"

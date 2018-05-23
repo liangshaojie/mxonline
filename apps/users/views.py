@@ -15,6 +15,7 @@ from django.http import HttpResponse,HttpResponseRedirect
 from operation.models import UserCourse,UserFavorite,UserMessage
 from organization.models import CourseOrg,Teacher
 from courses.models import Course
+from django.core.urlresolvers import reverse
 from pure_pagination import Paginator, EmptyPage, PageNotAnInteger
 
 class CustomBackend(ModelBackend):
@@ -30,7 +31,6 @@ class LogoutView(View):
     # 用户登出
     def get(self, request):
         logout(request)
-        from django.core.urlresolvers import reverse
         return HttpResponseRedirect(reverse("index"))
 
 
@@ -48,7 +48,7 @@ class LoginView(View):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return render(request, "index.html", )
+                    return HttpResponseRedirect(reverse("index"))
                 else:
                     return render(request, "login.html", {"msg": "没有激活"})
             else:
@@ -307,3 +307,15 @@ class IndexView(View):
             "course_orgs":course_orgs
         })
 
+
+def page_not_find(request):
+    from django.shortcuts import render_to_response
+    response = render_to_response("404.html")
+    response.status_code = 404
+    return response
+
+def page_error(request):
+    from django.shortcuts import render_to_response
+    response = render_to_response("500.html")
+    response.status_code = 500
+    return response

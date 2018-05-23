@@ -31,6 +31,7 @@ class CourseOrg(models.Model):
     category = models.CharField(verbose_name=u"机构类别", max_length=4, choices=ORG_CHOICE, default='pxjg')
     image = models.ImageField(verbose_name=u"机构图", upload_to='org/%Y/%m', max_length=200)
     address = models.CharField(verbose_name=u"机构地址", max_length=150)
+    tag = models.CharField(verbose_name=u"机构标签", max_length=10,default=u"全国知名")
     city = models.ForeignKey(CityDict, verbose_name=u"所在城市", )
     students = models.IntegerField(verbose_name=u"学习人数", default=0)
     course_nums = models.IntegerField(verbose_name=u"课程数", default=0)
