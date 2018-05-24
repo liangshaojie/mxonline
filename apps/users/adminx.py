@@ -4,6 +4,7 @@ import xadmin
 from xadmin import views
 from .models import EmailVerifyRecord,Banner
 
+
 class BaseSetting(object):
     enable_themes = True
     use_bootswatch = True
